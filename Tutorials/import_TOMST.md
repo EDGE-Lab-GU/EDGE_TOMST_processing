@@ -1,9 +1,9 @@
 ---
 title: "import_TOMST"
-author: "Katrín Björnsdóttir"
-date: "2025-03-19"
-output: html_document
+format: md
+editor: visual
 ---
+
 ## Import TOMST logger data with R
 
 Written by: Katrín Björnsdóttir, 19. march 2025
@@ -27,7 +27,10 @@ Prepare your raw data according to these instructions.
     fi$file2 <- gsub("_..csv", "", fi$file)
     fi$plot_id <- sapply(fi$file, function(x) strsplit(x, "/")[[1]][3]) # extract plot_id from folder path
     fi <- fi[order(fi$plot_id), ]
-    fi$tomst_id <- sapply(fi$file, function(x) as.numeric(strsplit(gsub("data_", "", strsplit(x, "/")[[1]][4]), "_")[[1]][1])) # extract tomst_id from file path
+    fi$tomst_id <- sapply(
+      fi$file, function(x) 
+      as.numeric(strsplit(gsub("data_", "", strsplit(x, "/")[[1]][4]), "_")[[1]][1])
+      ) # extract tomst_id from file path
     ```
 
 2.  Before importing the data from your TOMST loggers you will need a datatable with the following information:
