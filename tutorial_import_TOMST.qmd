@@ -15,7 +15,7 @@ Prepare your raw data according to these instructions.
 
 1.  Packages:
 
-    ```{r, echo = FALSE, warning = FALSE, message = FALSE}
+    ```{r, warning = FALSE, message = FALSE}
     library(tidyverse)
     library(lubridate)
     library(data.table)

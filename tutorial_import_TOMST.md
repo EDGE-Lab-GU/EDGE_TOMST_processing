@@ -13,6 +13,12 @@ Prepare your raw data according to these instructions.
 
 1.  Packages:
 
+    ``` r
+    library(tidyverse)
+    library(lubridate)
+    library(data.table)
+    ```
+
 2.  Upload the raw data that you downloaded directly from the loggers to
     this folder: “Inputs/Raw_data/”. For best results, each plot should
     have a separate folder and the folder should be named after the plot
