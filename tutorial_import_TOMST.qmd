@@ -1,7 +1,5 @@
 ---
-title: "import_TOMST"
-author: "Katrín Björnsdóttir"
-format: html
+format: md
 editor: visual
 ---
 
@@ -15,7 +13,15 @@ This tutorial goes through how you can import TOMST logger data and process the 
 
 Prepare your raw data according to these instructions.
 
-1.  Upload the raw data that was downloaded directly from the loggers to this folder: "Inputs/Raw_data/". For best results, each plot should have a separate folder and the folder should be named after the plot name (see how the test data is organized).
+1.  Packages:
+
+    ```{r, echo = FALSE, warning = FALSE, message = FALSE}
+    library(tidyverse)
+    library(lubridate)
+    library(data.table)
+    ```
+
+2.  Upload the raw data that you downloaded directly from the loggers to this folder: "Inputs/Raw_data/". For best results, each plot should have a separate folder and the folder should be named after the plot name (see how the test data is organized).
 
     ```{r}
     # List all raw data files
@@ -31,7 +37,7 @@ Prepare your raw data according to these instructions.
     fi$tomst_id <- sapply(fi$file, function(x) as.numeric(strsplit(gsub("data_", "", strsplit(x, "/")[[1]][4]), "_")[[1]][1])) # extract tomst_id from file path
     ```
 
-2.  Before importing the data from your TOMST loggers you will need a datatable with the following information:
+3.  Before importing the data from your TOMST loggers you will need a datatable with the following information:
 
     *plot_id:* Add the name or id of the specific plot the TOMST logger belongs to.
 
@@ -47,7 +53,8 @@ Prepare your raw data according to these instructions.
 tomst_setup <- read_csv("Inputs/Raw_data/input_tomst_setup.csv") |> 
   mutate(installation_date = as.Date(installation_date)) |>
   select(plot_id, installation_date) |>
-  mutate(installation_date_new = installation_date + 1) |> # Add one day because we don't know the exact time when the logger was set up. Easier to ignore the installation date completely.
+  # Add one day because we don't know the exact time when the logger was set up. Easier to ignore the installation date completely.
+  mutate(installation_date_new = installation_date + 1) |>
   filter(!is.na(installation_date))
 ```
 

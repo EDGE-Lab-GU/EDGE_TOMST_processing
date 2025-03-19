@@ -1,22 +1,24 @@
----
-title: "import_TOMST"
-format: md
-editor: visual
----
+
 
 ## Import TOMST logger data with R
 
 Written by: Katrín Björnsdóttir, 19. march 2025
 
-This tutorial goes through how you can import TOMST logger data and process the raw readings.
+This tutorial goes through how you can import TOMST logger data and
+process the raw readings.
 
 ## What you need before importing the data into R:
 
 Prepare your raw data according to these instructions.
 
-1.  Upload the raw data that was downloaded directly from the loggers to this folder: "Inputs/Raw_data/". For best results, each plot should have a separate folder and the folder should be named after the plot name (see how the test data is organized).
+1.  Packages:
 
-    ```{r}
+2.  Upload the raw data that you downloaded directly from the loggers to
+    this folder: “Inputs/Raw_data/”. For best results, each plot should
+    have a separate folder and the folder should be named after the plot
+    name (see how the test data is organized).
+
+    ``` r
     # List all raw data files
     f <- c(
       list.files("Inputs/Raw_data/", pattern = "data_", full.names = TRUE, recursive = TRUE)
@@ -27,37 +29,49 @@ Prepare your raw data according to these instructions.
     fi$file2 <- gsub("_..csv", "", fi$file)
     fi$plot_id <- sapply(fi$file, function(x) strsplit(x, "/")[[1]][3]) # extract plot_id from folder path
     fi <- fi[order(fi$plot_id), ]
-    fi$tomst_id <- sapply(
-      fi$file, function(x) 
-      as.numeric(strsplit(gsub("data_", "", strsplit(x, "/")[[1]][4]), "_")[[1]][1])
-      ) # extract tomst_id from file path
+    fi$tomst_id <- sapply(fi$file, function(x) as.numeric(strsplit(gsub("data_", "", strsplit(x, "/")[[1]][4]), "_")[[1]][1])) # extract tomst_id from file path
     ```
 
-2.  Before importing the data from your TOMST loggers you will need a datatable with the following information:
+3.  Before importing the data from your TOMST loggers you will need a
+    datatable with the following information:
 
-    *plot_id:* Add the name or id of the specific plot the TOMST logger belongs to.
+    *plot_id:* Add the name or id of the specific plot the TOMST logger
+    belongs to.
 
-    *installation_date:* Add the date when the logger was installed in the field.
+    *installation_date:* Add the date when the logger was installed in
+    the field.
 
     *tomst_id:* Add the TOMST id number from the logger.
 
-    You can use the template which you can access on the repository here: imput_tomst_setup
+    You can use the template which you can access on the repository
+    here: imput_tomst_setup
 
     Now load this datatable into R:
 
-```{r}
+``` r
 tomst_setup <- read_csv("Inputs/Raw_data/input_tomst_setup.csv") |> 
   mutate(installation_date = as.Date(installation_date)) |>
   select(plot_id, installation_date) |>
-  mutate(installation_date_new = installation_date + 1) |> # Add one day because we don't know the exact time when the logger was set up. Easier to ignore the installation date completely.
+  # Add one day because we don't know the exact time when the logger was set up. Easier to ignore the installation date completely.
+  mutate(installation_date_new = installation_date + 1) |>
   filter(!is.na(installation_date))
 ```
+
+    Rows: 2 Columns: 4
+    ── Column specification ────────────────────────────────────────────────────────
+    Delimiter: ","
+    chr (2): plot_id, installation_date
+    dbl (1): tomst_id
+    lgl (1): comments
+
+    ℹ Use `spec()` to retrieve the full column specification for this data.
+    ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
 
 # Import TOMST data
 
 Use this function to load in all TOMST data into one datafile.
 
-```{r}
+``` r
 # Read and clean data
 readdata <- function(i) {
   files_to_read <- fi |> filter(grepl(i, fi$file))
@@ -85,7 +99,12 @@ readdata <- function(i) {
 
 # Apply the function
 mylist <- lapply(fi$file, readdata)
+```
 
+    [1] "Inputs/Raw_data/Test_plot_1/data_94205452_2024_08_26_0.csv"
+    [1] "Inputs/Raw_data/Test_plot_2/data_94205448_2024_08_25_0.csv"
+
+``` r
 tomst_data <- rbindlist(mylist, use.names = TRUE, fill = TRUE) |> 
 # Clean up column names
   rename(datetime = V2, zone = V3, T1 = V4, T2 = V5, T3 = V6, moist = V7) |>
@@ -94,5 +113,4 @@ tomst_data <- rbindlist(mylist, use.names = TRUE, fill = TRUE) |>
   left_join(tomst_setup, by = "plot_id") |> 
   filter(datetime > installation_date_new) |>
   select(-installation_date_new, installation_date)
-
 ```
