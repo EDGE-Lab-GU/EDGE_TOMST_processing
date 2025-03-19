@@ -13,6 +13,8 @@ Prepare your raw data according to these instructions.
 
 1.  Packages:
 
+    *Make sure you install all packages if you don’t have them already*
+
     ``` r
     library(tidyverse)
     library(lubridate)
@@ -20,9 +22,11 @@ Prepare your raw data according to these instructions.
     ```
 
 2.  Upload the raw data that you downloaded directly from the loggers to
-    this folder: “Inputs/Raw_data/”. For best results, each plot should
-    have a separate folder and the folder should be named after the plot
-    name (see how the test data is organized).
+    this folder
+    [“Inputs/Raw_data/”](https://github.com/EDGE-Lab-GU/EDGE_TOMST_processing/tree/main/Inputs/Raw_data).
+    For best results, each plot should have a separate folder and the
+    folder should be named after the plot name (see how the test data is
+    organized).
 
     ``` r
     # List all raw data files
@@ -50,7 +54,8 @@ Prepare your raw data according to these instructions.
     *tomst_id:* Add the TOMST id number from the logger.
 
     You can use the template which you can access on the repository
-    here: imput_tomst_setup
+    here:
+    [imput_tomst_setup](https://github.com/EDGE-Lab-GU/EDGE_TOMST_processing/blob/main/Inputs/Raw_data/input_tomst_setup.csv)
 
     Now load this datatable into R:
 
@@ -62,16 +67,6 @@ tomst_setup <- read_csv("Inputs/Raw_data/input_tomst_setup.csv") |>
   mutate(installation_date_new = installation_date + 1) |>
   filter(!is.na(installation_date))
 ```
-
-    Rows: 2 Columns: 4
-    ── Column specification ────────────────────────────────────────────────────────
-    Delimiter: ","
-    chr (2): plot_id, installation_date
-    dbl (1): tomst_id
-    lgl (1): comments
-
-    ℹ Use `spec()` to retrieve the full column specification for this data.
-    ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
 
 # Import TOMST data
 
