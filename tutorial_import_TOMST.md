@@ -1,13 +1,13 @@
 
 
-## Import TOMST logger data with R
+# Import TOMST logger data with R
 
 Written by: Katrín Björnsdóttir, 19. march 2025
 
 This tutorial goes through how you can import TOMST logger data and
 process the raw readings.
 
-## What you need before importing the data into R:
+## Prepare data:
 
 Prepare your raw data according to these instructions.
 
@@ -19,6 +19,7 @@ Prepare your raw data according to these instructions.
     library(tidyverse)
     library(lubridate)
     library(data.table)
+    library(purrr)
     ```
 
 2.  Upload the raw data that you downloaded directly from the loggers to
@@ -34,7 +35,7 @@ Prepare your raw data according to these instructions.
       list.files("Inputs/Raw_data/", pattern = "data_", full.names = TRUE, recursive = TRUE)
     )
 
-    # Prepare the data for importing
+    # Prepare information for importing
     fi <- data.frame(file = f)
     fi$file2 <- gsub("_..csv", "", fi$file)
     fi$plot_id <- sapply(fi$file, function(x) strsplit(x, "/")[[1]][3]) # extract plot_id from folder path
@@ -55,7 +56,9 @@ Prepare your raw data according to these instructions.
 
     You can use the template which you can access on the repository
     here:
-    [imput_tomst_setup](https://github.com/EDGE-Lab-GU/EDGE_TOMST_processing/blob/main/Inputs/Raw_data/input_tomst_setup.csv)
+    [imput_tomst_setup](https://github.com/EDGE-Lab-GU/EDGE_TOMST_processing/blob/main/Inputs/Raw_data/input_tomst_setup.csv).
+    Note: It should be placed in the “Inputs/Raw_data/” folder for the
+    code to work.
 
     Now load this datatable into R:
 
@@ -68,50 +71,46 @@ tomst_setup <- read_csv("Inputs/Raw_data/input_tomst_setup.csv") |>
   filter(!is.na(installation_date))
 ```
 
-# Import TOMST data
+## Import TOMST data
 
 Use this function to load in all TOMST data into one datafile.
 
 ``` r
 # Read and clean data
 readdata <- function(i) {
-  files_to_read <- fi |> filter(grepl(i, fi$file))
+  files_to_read <- fi |> 
+    filter(grepl(i, fi$file))
   
-  tomst_data <- data.table()
-  for (ii in files_to_read$file) {
-    print(ii)
-    d <- fread(ii) |>
+  map_dfr(files_to_read$file, ~ {
+    print(.x)
+    d <- fread(.x) |>
       select(V2, V3, V4, V5, V6, V7) |>
       filter(!duplicated(V2, fromLast = TRUE)) |>
-      mutate(across(V4:V6, ~ as.numeric(gsub(",", ".", .)))) |>
-      mutate(V2 = ymd_hm(V2, tz = "UTC")) |>
-      mutate(V2 = with_tz(V2, tzone = "Europe/Stockholm"))
-    
-    
-    d$plot_id <- fi$plot_id[which(fi$file == ii)][1]
-    d$tomst_id <- fi$tomst_id[which(fi$file == ii)][1]
-    
-    # Combine with previous data
-    tomst_data <- rbindlist(list(tomst_data, d), use.names = TRUE, fill = TRUE)
-  }
-  
-  return(tomst_data)
+      mutate(across(V4:V6, ~ as.numeric(gsub(",", ".", .))),
+             V2 = ymd_hm(V2, tz = "UTC"),
+             V2 = with_tz(V2, tzone = "Europe/Stockholm"))
+
+    d$plot_id <- fi$plot_id[which(fi$file == .x)][1]
+    d$tomst_id <- fi$tomst_id[which(fi$file == .x)][1]
+
+    d
+  })
 }
 
 # Apply the function
-mylist <- lapply(fi$file, readdata)
+mylist <- map(fi$file, readdata)
 ```
 
     [1] "Inputs/Raw_data/Test_plot_1/data_94205452_2024_08_26_0.csv"
     [1] "Inputs/Raw_data/Test_plot_2/data_94205448_2024_08_25_0.csv"
 
 ``` r
-tomst_data <- rbindlist(mylist, use.names = TRUE, fill = TRUE) |> 
+tomst_data <- bind_rows(mylist) |> 
 # Clean up column names
   rename(datetime = V2, zone = V3, T1 = V4, T2 = V5, T3 = V6, moist = V7) |>
   arrange(plot_id, datetime) |> 
   # Match setup times and filter out data before setup
   left_join(tomst_setup, by = "plot_id") |> 
   filter(datetime > installation_date_new) |>
-  select(-installation_date_new, installation_date)
+  select(-installation_date_new)
 ```
