@@ -90,7 +90,6 @@ readdata <- function(i) {
     filter(grepl(i, fi$file))
   
   map_dfr(files_to_read$file, ~ {
-    print(.x)
     d <- fread(.x) %>%
       select(V2, V3, V4, V5, V6, V7) %>%
       filter(!duplicated(V2, fromLast = TRUE)) %>%

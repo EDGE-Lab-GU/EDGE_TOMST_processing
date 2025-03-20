@@ -104,7 +104,6 @@ readdata <- function(i) {
     filter(grepl(i, fi$file))
   
   map_dfr(files_to_read$file, ~ {
-    print(.x)
     d <- fread(.x) %>%
       select(V2, V3, V4, V5, V6, V7) %>%
       filter(!duplicated(V2, fromLast = TRUE)) %>%
@@ -122,12 +121,7 @@ readdata <- function(i) {
 # Apply the function using map
 # Side note: map is a function used to loop over a list of vectors from the 'purrr' package
 mylist <- map(fi$file, readdata)
-```
 
-    [1] "Inputs/Raw_data/Test_plot_1/data_94205452_2024_08_26_0.csv"
-    [1] "Inputs/Raw_data/Test_plot_2/data_94205448_2024_08_25_0.csv"
-
-``` r
 tomst_data <- bind_rows(mylist) %>% 
   # Clean up column names
   rename(datetime = V2, zone = V3, T1 = V4, T2 = V5, T3 = V6, moist = V7) %>%
