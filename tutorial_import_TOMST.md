@@ -31,17 +31,16 @@ Prepare your raw data according to these instructions.
     data is organized).
 
     ``` r
-    # List all raw data files
-    f <- c(
-      list.files("Inputs/Raw_data/", pattern = "data_", full.names = TRUE, recursive = TRUE)
-    )
+      # List all TOMST files (will list all folders you have added in this folder)
+    f <- list.files("Inputs/Raw_data/", pattern = "data_", full.names = TRUE, recursive = TRUE)
 
     # Prepare information for importing
-    fi <- data.frame(file = f)
-    fi$file2 <- gsub("_..csv", "", fi$file)
-    fi$plot_id <- sapply(fi$file, function(x) strsplit(x, "/")[[1]][3]) # extract plot_id from folder path
-    fi <- fi[order(fi$plot_id), ]
-    fi$tomst_id <- sapply(fi$file, function(x) as.numeric(strsplit(gsub("data_", "", strsplit(x, "/")[[1]][4]), "_")[[1]][1])) # extract tomst_id from file path
+    fi <- tibble(file = f) %>%
+      mutate(
+        plot_id = str_split(file, "/", simplify = TRUE)[, 3],  # Extract 3rd folder from the path which should be the plot_id
+        tomst_id = str_extract(file, "(?<=data_)[0-9]+") %>% as.numeric() # Extracts the TOMST_id from the data file name path
+        ) %>%
+      arrange(plot_id)
     ```
 
 3.  Before importing the data from your TOMST loggers you will need a
