@@ -31,7 +31,7 @@ Prepare your raw data according to these instructions.
     data is organized).
 
     ``` r
-      # List all TOMST files (will list all folders you have added in this folder)
+    # List all TOMST files
     f <- list.files("Inputs/Raw_data/", pattern = "data_", full.names = TRUE, recursive = TRUE)
 
     # Prepare information for importing
@@ -54,6 +54,11 @@ Prepare your raw data according to these instructions.
 
     *tomst_id:* Add the TOMST id number from the logger.
 
+    Since the TOMST data loggers usually start recording data before
+    being installed in the field, we need installation date information
+    which we will use to filter out values that were recorded before the
+    logger was installed.
+
     You can use the template which you can access on the repository
     here:
     [imput_tomst_setup](https://github.com/EDGE-Lab-GU/EDGE_TOMST_processing/blob/main/Inputs/Raw_data/input_tomst_setup.csv).
@@ -66,7 +71,7 @@ Prepare your raw data according to these instructions.
 tomst_setup <- read_csv("Inputs/Raw_data/input_tomst_setup.csv") %>% 
   mutate(installation_date = as.Date(installation_date)) %>%
   select(plot_id, installation_date) %>%
-  # Add one day because we don't know the exact time when the logger was set up. Easier to ignore the installation date completely.
+  # Add one day because we don't want to include only half a day in daily means calculations
   mutate(installation_date_new = installation_date + 1) %>%
   filter(!is.na(installation_date))
 ```
