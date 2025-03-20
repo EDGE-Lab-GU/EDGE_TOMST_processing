@@ -26,6 +26,8 @@ Prepare your raw data according to these instructions.
 
 2.  Upload the raw data that you downloaded directly from the loggers to this folder ["Inputs/Raw_data/"](https://github.com/EDGE-Lab-GU/EDGE_TOMST_processing/tree/main/Inputs/Raw_data). For best results, each TOMST logger should have a separate folder and the folder should be named after the plot name (see how the test data is organized).
 
+For Windows:
+
     ```{r, message = FALSE}
     # List all TOMST files
     f <- list.files("Inputs/Raw_data/", pattern = "data_", full.names = TRUE, recursive = TRUE)
@@ -38,6 +40,22 @@ Prepare your raw data according to these instructions.
         ) %>%
       arrange(plot_id)
     ```
+
+For Mac:
+
+```{r, echo = FALSE}
+    # List all TOMST files
+    f <- list.files("Inputs/Raw_data", pattern = "data_", full.names = TRUE, recursive = TRUE)
+
+    # Prepare information for importing
+    fi <- tibble(file = f) %>%
+      mutate(
+        plot_id = str_split(file, "/", simplify = TRUE)[, 3],  # Extract 3rd folder from the path which should be the plot_id
+        tomst_id = str_extract(file, "(?<=data_)[0-9]+") %>% as.numeric() # Extracts the TOMST_id from the data file name path
+        ) %>%
+      arrange(plot_id)
+```
+
 
 3.  Before importing the data from your TOMST loggers you will need a datatable with the following information:
 

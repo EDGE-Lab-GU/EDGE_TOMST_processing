@@ -30,7 +30,11 @@ Prepare your raw data according to these instructions.
     and the folder should be named after the plot name (see how the test
     data is organized).
 
-    ``` r
+For Windows:
+
+    ::: {.cell}
+
+    ```{.r .cell-code}
     # List all TOMST files
     f <- list.files("Inputs/Raw_data/", pattern = "data_", full.names = TRUE, recursive = TRUE)
 
@@ -42,8 +46,11 @@ Prepare your raw data according to these instructions.
         ) %>%
       arrange(plot_id)
     ```
+    :::
 
-3.  Before importing the data from your TOMST loggers you will need a
+For Mac:
+
+1.  Before importing the data from your TOMST loggers you will need a
     datatable with the following information:
 
     *plot_id:* Add the name or id of the specific plot the TOMST logger

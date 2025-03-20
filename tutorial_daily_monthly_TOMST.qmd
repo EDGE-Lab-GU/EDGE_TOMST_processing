@@ -82,7 +82,7 @@ daily_means <- tomst_data %>%
 
 ## Calculate monthly means (and other useful variables)
 
-```{r}
+```{r, message = FALSE}
 monthly_means <- tomst_data %>%
   mutate(date = as_date(datetime),
          # Extract year and month

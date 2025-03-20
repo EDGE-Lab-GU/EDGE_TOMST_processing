@@ -122,9 +122,6 @@ monthly_means <- tomst_data %>%
   )
 ```
 
-    `summarise()` has grouped output by 'plot_id', 'year'. You can override using
-    the `.groups` argument.
-
 ## Save daily and monthly means outputs
 
 ``` r
