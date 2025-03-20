@@ -28,22 +28,22 @@ Prepare your raw data according to these instructions.
 
 For Windows:
 
-    ```{r, message = FALSE}
-    # List all TOMST files
-    f <- list.files("Inputs/Raw_data/", pattern = "data_", full.names = TRUE, recursive = TRUE)
+```{r, message = FALSE}
+# List all TOMST files
+f <- list.files("Inputs/Raw_data/", pattern = "data_", full.names = TRUE, recursive = TRUE)
 
-    # Prepare information for importing
-    fi <- tibble(file = f) %>%
-      mutate(
-        plot_id = str_split(file, "/", simplify = TRUE)[, 3],  # Extract 3rd folder from the path which should be the plot_id
-        tomst_id = str_extract(file, "(?<=data_)[0-9]+") %>% as.numeric() # Extracts the TOMST_id from the data file name path
-        ) %>%
-      arrange(plot_id)
-    ```
+# Prepare information for importing
+fi <- tibble(file = f) %>%
+  mutate(
+    plot_id = str_split(file, "/", simplify = TRUE)[, 3],  # Extract 3rd folder from the path which should be the plot_id
+    tomst_id = str_extract(file, "(?<=data_)[0-9]+") %>% as.numeric() # Extracts the TOMST_id from the data file name path
+    ) %>%
+  arrange(plot_id)
+```
 
 For Mac:
 
-```{r, echo = FALSE}
+```{r, eval = FALSE}
     # List all TOMST files
     f <- list.files("Inputs/Raw_data", pattern = "data_", full.names = TRUE, recursive = TRUE)
 
@@ -56,7 +56,6 @@ For Mac:
       arrange(plot_id)
 ```
 
-
 3.  Before importing the data from your TOMST loggers you will need a datatable with the following information:
 
     *plot_id:* Add the name or id of the specific plot the TOMST logger belongs to.
@@ -64,7 +63,7 @@ For Mac:
     *installation_date:* Add the date when the logger was installed in the field.
 
     *tomst_id:* Add the TOMST id number from the logger.
-    
+
     Since the TOMST data loggers usually start recording data before being installed in the field, we need installation date information which we will use to filter out values that were recorded before the logger was installed.
 
     You can use the template which you can access on the repository here: [imput_tomst_setup](https://github.com/EDGE-Lab-GU/EDGE_TOMST_processing/blob/main/Inputs/Raw_data/input_tomst_setup.csv). Note: It should be placed in the "Inputs/Raw_data/" folder for the code to work.

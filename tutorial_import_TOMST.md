@@ -32,11 +32,24 @@ Prepare your raw data according to these instructions.
 
 For Windows:
 
-    ::: {.cell}
+``` r
+# List all TOMST files
+f <- list.files("Inputs/Raw_data/", pattern = "data_", full.names = TRUE, recursive = TRUE)
 
-    ```{.r .cell-code}
+# Prepare information for importing
+fi <- tibble(file = f) %>%
+  mutate(
+    plot_id = str_split(file, "/", simplify = TRUE)[, 3],  # Extract 3rd folder from the path which should be the plot_id
+    tomst_id = str_extract(file, "(?<=data_)[0-9]+") %>% as.numeric() # Extracts the TOMST_id from the data file name path
+    ) %>%
+  arrange(plot_id)
+```
+
+For Mac:
+
+``` r
     # List all TOMST files
-    f <- list.files("Inputs/Raw_data/", pattern = "data_", full.names = TRUE, recursive = TRUE)
+    f <- list.files("Inputs/Raw_data", pattern = "data_", full.names = TRUE, recursive = TRUE)
 
     # Prepare information for importing
     fi <- tibble(file = f) %>%
@@ -45,10 +58,7 @@ For Windows:
         tomst_id = str_extract(file, "(?<=data_)[0-9]+") %>% as.numeric() # Extracts the TOMST_id from the data file name path
         ) %>%
       arrange(plot_id)
-    ```
-    :::
-
-For Mac:
+```
 
 1.  Before importing the data from your TOMST loggers you will need a
     datatable with the following information:
