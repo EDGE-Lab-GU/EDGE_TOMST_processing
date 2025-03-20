@@ -25,9 +25,9 @@ Prepare your raw data according to these instructions.
 2.  Upload the raw data that you downloaded directly from the loggers to
     this folder
     [“Inputs/Raw_data/”](https://github.com/EDGE-Lab-GU/EDGE_TOMST_processing/tree/main/Inputs/Raw_data).
-    For best results, each plot should have a separate folder and the
-    folder should be named after the plot name (see how the test data is
-    organized).
+    For best results, each TOMST logger should have a separate folder
+    and the folder should be named after the plot name (see how the test
+    data is organized).
 
     ``` r
     # List all raw data files
@@ -113,4 +113,13 @@ tomst_data <- bind_rows(mylist) |>
   left_join(tomst_setup, by = "plot_id") |> 
   filter(datetime > installation_date_new) |>
   select(-installation_date_new)
+```
+
+## Save as outputs
+
+For further use, you can save the data as a csv data table output. You
+can for example use this location - “Outputs/Data/”.
+
+``` r
+write_csv(tomst_data, "Outputs/Data/output_tomst_test.csv") # change the output name to fit your data
 ```
