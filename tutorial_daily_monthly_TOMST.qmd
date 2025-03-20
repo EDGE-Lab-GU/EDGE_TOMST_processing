@@ -13,7 +13,7 @@ This tutorial demonstrates how to calculate daily and monthly means from raw TOM
 
 1.  Load packages *(make sure you have all packages installed already)*
 
-```{r}
+```{r, message = FALSE, warning = FALSE}
 library(dplyr)
 library(data.table)
 library(lubridate)
@@ -128,6 +128,5 @@ monthly_means <- tomst_data %>%
 
 ```{r}
 write_csv(daily_means, "Outputs/Data/output_daily_means.csv")
-
 write_csv(monthly_means, "Outputs/Data/output_monthly_means.csv")
 ```

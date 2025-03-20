@@ -14,97 +14,11 @@ raw TOMST logger readings.
 
 ``` r
 library(dplyr)
-```
-
-
-    Attaching package: 'dplyr'
-
-    The following objects are masked from 'package:stats':
-
-        filter, lag
-
-    The following objects are masked from 'package:base':
-
-        intersect, setdiff, setequal, union
-
-``` r
 library(data.table)
-```
-
-    Warning: package 'data.table' was built under R version 4.3.3
-
-
-    Attaching package: 'data.table'
-
-    The following objects are masked from 'package:dplyr':
-
-        between, first, last
-
-``` r
 library(lubridate)
-```
-
-    Warning: package 'lubridate' was built under R version 4.3.3
-
-
-    Attaching package: 'lubridate'
-
-    The following objects are masked from 'package:data.table':
-
-        hour, isoweek, mday, minute, month, quarter, second, wday, week,
-        yday, year
-
-    The following objects are masked from 'package:base':
-
-        date, intersect, setdiff, union
-
-``` r
 library(purrr)
-```
-
-
-    Attaching package: 'purrr'
-
-    The following object is masked from 'package:data.table':
-
-        transpose
-
-``` r
 library(tidyverse)
 ```
-
-    Warning: package 'tidyverse' was built under R version 4.3.3
-
-    Warning: package 'ggplot2' was built under R version 4.3.3
-
-    Warning: package 'readr' was built under R version 4.3.3
-
-    Warning: package 'forcats' was built under R version 4.3.3
-
-    ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
-    ✔ forcats 1.0.0     ✔ stringr 1.5.1
-    ✔ ggplot2 3.5.1     ✔ tibble  3.2.1
-    ✔ readr   2.1.5     ✔ tidyr   1.3.0
-
-    ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
-    ✖ data.table::between() masks dplyr::between()
-    ✖ dplyr::filter()       masks stats::filter()
-    ✖ data.table::first()   masks dplyr::first()
-    ✖ lubridate::hour()     masks data.table::hour()
-    ✖ lubridate::isoweek()  masks data.table::isoweek()
-    ✖ dplyr::lag()          masks stats::lag()
-    ✖ data.table::last()    masks dplyr::last()
-    ✖ lubridate::mday()     masks data.table::mday()
-    ✖ lubridate::minute()   masks data.table::minute()
-    ✖ lubridate::month()    masks data.table::month()
-    ✖ lubridate::quarter()  masks data.table::quarter()
-    ✖ lubridate::second()   masks data.table::second()
-    ✖ purrr::transpose()    masks data.table::transpose()
-    ✖ lubridate::wday()     masks data.table::wday()
-    ✖ lubridate::week()     masks data.table::week()
-    ✖ lubridate::yday()     masks data.table::yday()
-    ✖ lubridate::year()     masks data.table::year()
-    ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
 
 1.  Load in the cleaned raw TOMST readings.
 
@@ -215,6 +129,5 @@ monthly_means <- tomst_data %>%
 
 ``` r
 write_csv(daily_means, "Outputs/Data/output_daily_means.csv")
-
 write_csv(monthly_means, "Outputs/Data/output_monthly_means.csv")
 ```
